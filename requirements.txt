@@ -6,6 +6,5 @@ scipy
 matplotlib
 pandas
 gunicorn==19.9.0
-warnings
+
 httptools
-pickle
