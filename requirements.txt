@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+scikit-learn==1.2.2
+numpy
+scipy
+matplotlib
+pandas
+gunicorn==19.9.0
+warnings
+httptools
+pickle
