@@ -8,3 +8,9 @@ pandas
 
 
 httptools
+
+torch
+torchvision
+pybase64
+pillow
+

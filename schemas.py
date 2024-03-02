@@ -5,4 +5,7 @@ class BaseNote(BaseModel):
     skewness: float 
     curtosis: float 
     entropy: float
+
+class ImageFileSchema(BaseModel):
+    image_file_base64_str: str    
     
