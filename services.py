@@ -1,4 +1,4 @@
-from schemas import BaseNote, ImageFileSchema
+from schemas import BaseNote, ImageFileSchema, BaseNote2
 from fastapi.encoders import jsonable_encoder
 from fastapi import Response, status
 import pickle
@@ -14,9 +14,12 @@ from PIL import Image
 
 warnings.filterwarnings('ignore')       
 CLASSIFIER_FILE_PATH = os.path.join(os.getcwd(),'classifier.pkl')
+CLASSIFIER_FILE_PATH2 = os.path.join(os.getcwd(),'rf.pkl')
 MODEL_FILE_PATH = os.path.join(os.getcwd(),'resnet18v2classification_model.pth')
 pickle_in = open(CLASSIFIER_FILE_PATH,'rb')
+pickle_in2 = open(CLASSIFIER_FILE_PATH2,'rb')
 classifier=pickle.load(pickle_in)
+classifier2=pickle.load(pickle_in2)
 
 def predict_outcome(data: BaseNote, response: Response):
     try:
@@ -107,4 +110,36 @@ def predict_disease_outcome(image_file: ImageFileSchema, response: Response ):
         shutil.rmtree(os.path.join(os.getcwd(),'temp_image_storage'))
         response.status_code=status.HTTP_400_BAD_REQUEST
         return jsonable_encoder({'error': str(error),'status': status.HTTP_400_BAD_REQUEST})
-        
+
+
+def predict_outcome2(data: BaseNote2, response: Response):
+    try:
+        temparature = data.temparature
+        humidity = data.humidity
+        moisture = data.moisture
+        nitrogen = data.nitrogen
+        potassium = data.potassium
+        phosphorous = data.phosphorous
+        soil_type_black = data.soil_type_black
+        soil_type_clayey = data.soil_type_clayey
+        soil_type_loamy = data.soil_type_loamy
+        soil_type_red = data.soil_type_red
+        soil_type_sandy = data.soil_type_sandy
+        crop_type_barley = data.crop_type_barley
+        crop_type_cotton = data.crop_type_cotton
+        crop_type_ground_nuts = data.crop_type_ground_nuts
+        crop_type_maize = data.crop_type_maize
+        crop_type_millets = data.crop_type_millets
+        crop_type_oil_seeds = data.crop_type_oil_seeds
+        crop_type_paddy = data.crop_type_paddy
+        crop_type_pulses = data.crop_type_pulses
+        crop_type_sugarcane = data.crop_type_sugarcane
+        crop_type_tobacco = data.crop_type_tobacco
+        crop_type_wheat = data.crop_type_wheat
+        prediction = classifier2.predict([[temparature,humidity,moisture,nitrogen,potassium,phosphorous,soil_type_black,soil_type_clayey,soil_type_loamy,soil_type_red,soil_type_sandy,crop_type_barley,crop_type_cotton,crop_type_ground_nuts,crop_type_maize,crop_type_millets,crop_type_oil_seeds,crop_type_paddy,crop_type_pulses,crop_type_sugarcane,crop_type_tobacco,crop_type_wheat]])
+        response.status_code = status.HTTP_200_OK 
+        return jsonable_encoder({'prediction': prediction[0],'status': status.HTTP_200_OK})          
+    except Exception as error:    
+        response.status_code=status.HTTP_400_BAD_REQUEST
+        return jsonable_encoder({'error': str(error),'status': status.HTTP_400_BAD_REQUEST})
+                

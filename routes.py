@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response
-from services import predict_outcome, predict_disease_outcome
-from schemas import BaseNote, ImageFileSchema
+from services import predict_outcome, predict_disease_outcome, predict_outcome2
+from schemas import BaseNote, ImageFileSchema, BaseNote2
 
 router = APIRouter()
 
@@ -11,3 +11,7 @@ async def predict(data: BaseNote, response: Response):
 @router.post('/get-disease-summary')
 async def get_disease_summary(image_file: ImageFileSchema, response: Response):
     return predict_disease_outcome(image_file,response)
+
+@router.post('/predictferti')
+async def predict(data: BaseNote2, response: Response):
+    return predict_outcome2(data,response)
