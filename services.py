@@ -1,4 +1,4 @@
-from schemas import BaseNote, ImageFileSchema, BaseNote2
+from schemas import BaseNote, ImageFileSchema, BaseNote2, CropPred
 from fastapi.encoders import jsonable_encoder
 from fastapi import Response, status
 import pickle
@@ -15,11 +15,14 @@ from PIL import Image
 warnings.filterwarnings('ignore')       
 CLASSIFIER_FILE_PATH = os.path.join(os.getcwd(),'classifier.pkl')
 CLASSIFIER_FILE_PATH2 = os.path.join(os.getcwd(),'rf.pkl')
+CLASSIFIER_FILE_PATH3 = os.path.join(os.getcwd(),'cp_trained_model.pkl')
 MODEL_FILE_PATH = os.path.join(os.getcwd(),'resnet18v2classification_model.pth')
 pickle_in = open(CLASSIFIER_FILE_PATH,'rb')
 pickle_in2 = open(CLASSIFIER_FILE_PATH2,'rb')
+pickle_in3 = open(CLASSIFIER_FILE_PATH3,'rb')
 classifier=pickle.load(pickle_in)
 classifier2=pickle.load(pickle_in2)
+classifier3=pickle.load(pickle_in3)
 
 def predict_outcome(data: BaseNote, response: Response):
     try:
@@ -142,4 +145,20 @@ def predict_outcome2(data: BaseNote2, response: Response):
     except Exception as error:    
         response.status_code=status.HTTP_400_BAD_REQUEST
         return jsonable_encoder({'error': str(error),'status': status.HTTP_400_BAD_REQUEST})
-                
+
+def predict_outcome3(data: CropPred, response: Response):
+       try:
+           temperature = data.temperature
+           humidity = data.humidity
+           ph = data.ph
+           rainfall = data.rainfall
+           
+           prediction = classifier3.predict([[temperature,humidity,ph,rainfall]])
+           response.status_code=status.HTTP_200_OK
+           return jsonable_encoder({'prediction': prediction[0],'status': status.HTTP_200_OK})
+       except Exception as error:    
+        response.status_code=status.HTTP_400_BAD_REQUEST
+        return jsonable_encoder({'error': str(error),'status': status.HTTP_400_BAD_REQUEST})
+
+           
+                        

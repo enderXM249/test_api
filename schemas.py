@@ -31,4 +31,10 @@ class BaseNote2(BaseModel):
     crop_type_pulses: int = 0
     crop_type_sugarcane: int = 0
     crop_type_tobacco: int = 0
-    crop_type_wheat: int = 0	    
+    crop_type_wheat: int = 0	 
+ 
+class CropPred(BaseModel):
+    temperature: float
+    humidity: float
+    ph: float
+    rainfall: float       
